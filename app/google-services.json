@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "657912493261",
+    "project_id": "gcook-10cf5",
+    "storage_bucket": "gcook-10cf5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657912493261:android:dd4fcb76a78c1a67cbe584",
+        "android_client_info": {
+          "package_name": "com.example.gcook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657912493261-f3c5omk4r8o3iqq9btodfohbkkfd3n3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gcook",
+            "certificate_hash": "1b65d2b1aa256133af9cfcb3a199d1363f26edf7"
+          }
+        },
+        {
+          "client_id": "657912493261-ec7554gqjgbhf82pqmq62361hc7kbghi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn1C7Ge9nQFFbyMnaM-JzEH81Psc5N758"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657912493261-ec7554gqjgbhf82pqmq62361hc7kbghi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
