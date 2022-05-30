@@ -1,4 +1,4 @@
-package com.example.gcook
+package com.example.gcook.UI.Auth
 
 import android.content.Context
 import android.content.Intent
@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.gcook.Model.Food
-import com.example.gcook.Model.Material
-import com.example.gcook.Model.Step
+import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.Model.User
 import com.example.gcook.databinding.ActivityRegisterBinding
 import com.google.firebase.database.*

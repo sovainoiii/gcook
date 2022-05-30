@@ -24,7 +24,7 @@
     <string name="title_step">Bước làm</string>
     <string name="add_step_btn">Thêm bước</string>
     <string name="hint_add_step">Bước làm</string>
-    <string name="add_food_btn">Thêm thức ăn</string>
+    <string name="add_food_btn">Thêm công thức</string>
     <string name="cmt_title">Bình luận</string>
     <string name="hint_cmt">Bình luận của bạn</string>
     <string name="hint_new_food_detail">Món ăn mới của user</string>

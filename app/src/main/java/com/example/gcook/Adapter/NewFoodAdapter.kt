@@ -30,7 +30,7 @@ class NewFoodAdapter(private val listFood: ArrayList<Food>)
         Glide.with(holder.itemView.context)
             .load(food.imageUrl)
             .into(holder.image)
-        holder.name.text = food.name
+        holder.name.text = food.name.capitalize()
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(food.id)
         }

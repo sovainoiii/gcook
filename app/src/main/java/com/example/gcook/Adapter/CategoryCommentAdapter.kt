@@ -10,11 +10,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.gcook.Model.Comment
 import com.example.gcook.R
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class CategoryCommentAdapter(private val listComment: ArrayList<Comment>)
     :RecyclerView.Adapter<CategoryCommentAdapter.CategoryCommentViewHolder>(){
 
-    var onItemClick: ((String) -> Unit)?? = null
+    private val database = FirebaseDatabase.getInstance()
+
+    var onItemClick: ((String) -> Unit)? = null
 
     class CategoryCommentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imageFood = itemView.findViewById<ImageView>(R.id.image_food)
@@ -30,20 +36,32 @@ class CategoryCommentAdapter(private val listComment: ArrayList<Comment>)
     }
 
     override fun onBindViewHolder(holder: CategoryCommentViewHolder, position: Int) {
+
         val comment = listComment[position]
-        Glide.with(holder.itemView.context)
-            .load(comment.food.imageUrl)
-            .into(holder.imageFood)
-        Glide.with(holder.itemView.context)
-            .load(comment.user.avatarUrl)
-            .apply(RequestOptions.circleCropTransform())
-            .into(holder.imageUser)
-        holder.nameFood.text = comment.food.name.capitalize()
-        holder.displayName.text = comment.user.displayName
+
+        database.getReference("users").child(comment.uId).get()
+            .addOnSuccessListener {
+                holder.displayName.text = it.child("displayName").value.toString()
+                Glide.with(holder.itemView.context)
+                    .load(it.child("avatarUrl").value.toString())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(holder.imageUser)
+            }
+
+        database.getReference("foods").child(comment.foodId).get()
+            .addOnSuccessListener {
+                holder.displayName.text = it.child("displayName").value.toString()
+                Glide.with(holder.itemView.context)
+                    .load(it.child("imageUrl").value.toString())
+                    .into(holder.imageFood)
+                holder.nameFood.text = it.child("name").value.toString().capitalize()
+            }
+
         holder.content.text = comment.content
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(comment.food.id)
+            onItemClick?.invoke(comment.foodId)
         }
+
     }
 
     override fun getItemCount(): Int {

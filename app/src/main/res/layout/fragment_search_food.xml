@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchFoodFragment">
+    tools:context=".UI.Home.Fragment.SearchFoodFragment">
 
     <LinearLayout
         android:id="@+id/search_box"
@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back_black"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             tools:ignore="ContentDescription" />
 
         <SearchView

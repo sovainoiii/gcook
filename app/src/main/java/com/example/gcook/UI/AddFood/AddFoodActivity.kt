@@ -1,4 +1,4 @@
-package com.example.gcook
+package com.example.gcook.UI.AddFood
 
 import android.app.ProgressDialog
 import android.content.ContentValues
@@ -16,6 +16,8 @@ import android.widget.Toast
 import com.example.gcook.Model.Food
 import com.example.gcook.Model.Material
 import com.example.gcook.Model.User
+import com.example.gcook.R
+import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.databinding.ActivityAddFoodBinding
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage

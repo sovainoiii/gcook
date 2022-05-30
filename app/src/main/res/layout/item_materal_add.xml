@@ -8,20 +8,6 @@
     android:layout_marginLeft="16dp"
     android:padding="5dp">
 
-    <!--<EditText
-        android:id="@+id/material"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:hint="@string/hint_material"
-        android:background="@drawable/bg_edit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="10dp"
-        android:importantForAutofill="no"
-        android:inputType="text" />-->
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/material_layout"
         android:layout_width="0dp"

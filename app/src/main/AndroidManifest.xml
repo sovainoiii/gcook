@@ -12,19 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GCook">
         <activity
+            android:name=".UI.Admin.ManageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.Profile.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".SearchResultActivity"
             android:exported="false" />
         <activity
-            android:name=".AddFoodActivity"
+            android:name=".UI.AddFood.AddFoodActivity"
             android:exported="false" />
         <activity
-            android:name=".DetailActivity"
+            android:name=".UI.Detail.DetailActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".UI.Auth.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".UI.Splash.SplashActivity"
             android:exported="true"
             android:noHistory="true"
             android:theme="@style/Theme.Splash">
@@ -35,10 +41,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".UI.Home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".UI.Auth.SignInActivity"
             android:exported="false" />
     </application>
 

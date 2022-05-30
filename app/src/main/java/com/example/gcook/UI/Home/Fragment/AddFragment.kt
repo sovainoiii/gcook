@@ -1,11 +1,11 @@
-package com.example.gcook
+package com.example.gcook.UI.Home.Fragment
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.example.gcook.UI.AddFood.AddFoodActivity
+import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.databinding.FragmentAddBinding
 import com.google.firebase.database.FirebaseDatabase
 

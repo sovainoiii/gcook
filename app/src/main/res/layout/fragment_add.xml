@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".AddFragment">
+        tools:context=".UI.Home.Fragment.AddFragment">
 
         <ImageView
             android:id="@+id/welcome_image"

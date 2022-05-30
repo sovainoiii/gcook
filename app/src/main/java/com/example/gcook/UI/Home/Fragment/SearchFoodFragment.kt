@@ -1,4 +1,4 @@
-package com.example.gcook
+package com.example.gcook.UI.Home.Fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gcook.Adapter.SearchNameFoodAdapter
 import com.example.gcook.Adapter.SearchResultAdapter
+import com.example.gcook.UI.Detail.DetailActivity
 import com.example.gcook.Model.Food
+import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.databinding.FragmentSearchFoodBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,6 +27,7 @@ class SearchFoodFragment : Fragment() {
     private lateinit var nameFoodAdapter: SearchNameFoodAdapter
     private lateinit var listFood: ArrayList<Food>
     private lateinit var foodAdapter: SearchResultAdapter
+    private lateinit var uId: String
     private val database = FirebaseDatabase.getInstance()
 
     override fun onCreateView(
@@ -33,6 +37,7 @@ class SearchFoodFragment : Fragment() {
         binding = FragmentSearchFoodBinding.inflate(inflater, container, false)
 
         val homeActivity = activity as HomeActivity
+        uId = homeActivity.getId()
 
         listNameFood = ArrayList()
         binding.listName.layoutManager = LinearLayoutManager(activity)
@@ -40,6 +45,8 @@ class SearchFoodFragment : Fragment() {
         binding.listName.adapter = nameFoodAdapter
         nameFoodAdapter.onItemClick = {
             val intent = Intent(activity, DetailActivity::class.java)
+            saveHistory(uId, it)
+            saveSearchCount(it)
             intent.putExtra("food_id",it)
             startActivity(intent)
         }
@@ -51,6 +58,8 @@ class SearchFoodFragment : Fragment() {
         foodAdapter.onItemClick = {
             val intent = Intent(activity, DetailActivity::class.java)
             intent.putExtra("food_id",it)
+            saveHistory(uId, it)
+            saveSearchCount(it)
             startActivity(intent)
         }
 
@@ -74,10 +83,34 @@ class SearchFoodFragment : Fragment() {
         return binding.root
     }
 
+    private fun saveSearchCount(foodId: String) {
+        database.getReference("searchCount").child(foodId).get()
+            .addOnSuccessListener {
+                if(it.exists()){
+                    val quality = it.value as Long
+                    database.getReference("searchCount/$foodId").setValue(quality + 1)
+                } else {
+                    database.getReference("searchCount/$foodId").setValue(1)
+                }
+            }
+    }
+
+    private fun saveHistory(uId: String, foodId: String) {
+        database.getReference("histories/$uId").child(foodId).get()
+            .addOnSuccessListener {
+                if (!it.exists()) {
+                    database.getReference("foods").child(foodId).get()
+                        .addOnSuccessListener {
+                            val food = it.getValue(Food::class.java)
+                            database.getReference("histories/$uId").child(foodId).setValue(food)
+                        }
+                }
+            }
+    }
+
     private fun searchFoodResult(name: String) {
         binding.listName.visibility = View.GONE
         binding.searchResultBox.visibility = View.VISIBLE
-        binding.result.text = "Kết quả của: '$name'"
         val query = database.getReference("foods")
             .orderByChild("name")
         if(name != "") {
@@ -92,20 +125,15 @@ class SearchFoodFragment : Fragment() {
                     }
                     foodAdapter.notifyDataSetChanged()
                     if(listFood.size == 0) {
-                        binding.resultSearch.visibility = View.VISIBLE
                         binding.searchResultBox.visibility = View.GONE
                     } else {
-                        binding.resultSearch.visibility = View.GONE
+                        binding.result.text = "Kết quả của: '$name'"
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
             })
-        } else {
-            binding.resultSearch.visibility = View.GONE
-            listFood.clear()
-            foodAdapter.notifyDataSetChanged()
         }
     }
 
@@ -127,7 +155,6 @@ class SearchFoodFragment : Fragment() {
                     nameFoodAdapter.notifyDataSetChanged()
                     if(listNameFood.size == 0) {
                         binding.resultSearch.visibility = View.VISIBLE
-
                     } else {
                         binding.resultSearch.visibility = View.GONE
                     }

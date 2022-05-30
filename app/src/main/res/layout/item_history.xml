@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="150dp"
+    android:layout_margin="5dp"
+    android:elevation="3dp"
+    android:background="@drawable/bg_item"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/img_food"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scaleType="center"
+        android:adjustViewBounds="true"
+        app:shapeAppearanceOverlay="@style/roundImageLeftRightTop"
+        tools:srcCompat="@tools:sample/avatars"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/name_food"
+        style="@style/title"
+        android:textSize="12sp"
+        android:padding="5dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="TextView" />
+</LinearLayout>

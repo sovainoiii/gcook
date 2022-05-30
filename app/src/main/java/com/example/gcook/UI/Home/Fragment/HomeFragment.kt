@@ -1,4 +1,4 @@
-package com.example.gcook
+package com.example.gcook.UI.Home.Fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gcook.Adapter.CategoryCommentAdapter
 import com.example.gcook.Adapter.CategoryItemAdapter
-import com.example.gcook.Adapter.CommentAdapter
+import com.example.gcook.UI.Detail.DetailActivity
 import com.example.gcook.Model.Comment
 import com.example.gcook.Model.Food
+import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.databinding.FragmentHomeBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,7 +43,7 @@ class HomeFragment : Fragment() {
         }
 
         cateAdapter = CategoryItemAdapter(listCate)
-        binding.listNew.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding.listNew.layoutManager = GridLayoutManager(activity, 2)
         binding.listNew.adapter = cateAdapter
         cateAdapter.onItemClick = {
             val intent = Intent(activity, DetailActivity::class.java)
@@ -63,7 +65,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadRecycleView() {
-        val queryCateNew = database.getReference("foods").orderByChild("timeUpdate").limitToLast(5)
+        val queryCateNew = database.getReference("foods").orderByChild("timeUpdate").limitToLast(10)
         queryCateNew.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()) {
@@ -80,7 +82,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        val queryCateCmt = database.getReference("comments").orderByChild("time").limitToLast(5)
+        val queryCateCmt = database.getReference("comments").orderByChild("time").limitToLast(6)
         queryCateCmt.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()) {

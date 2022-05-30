@@ -1,27 +1,24 @@
-package com.example.gcook
+package com.example.gcook.UI.Detail
 
-import android.content.ContentValues.TAG
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.GridLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.gcook.Adapter.CommentAdapter
-import com.example.gcook.Adapter.MaterialAdapter
-import com.example.gcook.Adapter.NewFoodAdapter
-import com.example.gcook.Adapter.StepAdapter
+import com.example.gcook.Adapter.*
 import com.example.gcook.Model.*
+import com.example.gcook.R
+import com.example.gcook.UI.Profile.ProfileActivity
 import com.example.gcook.databinding.ActivityDetailBinding
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.sql.Date
 import java.text.SimpleDateFormat
 
@@ -35,7 +32,6 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var listComment: ArrayList<Comment>
     private lateinit var uId: String
     private lateinit var foodId: String
-    private lateinit var history: History
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -51,7 +47,6 @@ class DetailActivity : AppCompatActivity() {
         uId = sharedPref.getString("uId", null).toString()
         foodId = intent.getStringExtra("food_id").toString()
 
-        addHistory()
         loadDetail()
         loadFavorite()
         loadUser()
@@ -69,30 +64,24 @@ class DetailActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.menuBtn.setOnClickListener {
+            showMenuReport(it, this, foodId)
+        }
+
     }
 
     private fun favorite() {
-        val key = "$uId$foodId"
-        database.getReference("favorites").child(key).get()
+        database.getReference("favorites/$uId").child(foodId).get()
             .addOnSuccessListener {
                 if(!it.exists()) {
-                    database.getReference("users")
-                        .child(uId)
-                        .get()
-                        .addOnSuccessListener { user ->
-                            database.getReference("foods")
-                                .child(foodId)
-                                .get()
-                                .addOnSuccessListener {
-                                    val food = it.getValue(Food::class.java)!!
-                                    val user = user.getValue(User::class.java)!!
-                                    history = History(id = key, user = user, food = food)
-                                    database.getReference("favorites").child(key).setValue(history)
-                                    binding.favorite.setImageResource(R.drawable.ic_favorite)
-                                }
+                    database.getReference("foods").child(foodId).get()
+                        .addOnSuccessListener {
+                            val food = it.getValue(Food::class.java)!!
+                            database.getReference("favorites/$uId").child(foodId).setValue(food)
+                            binding.favorite.setImageResource(R.drawable.ic_favorite)
                         }
                 } else {
-                    database.getReference("favorites").child(key).removeValue()
+                    database.getReference("favorites/$uId").child(foodId).removeValue()
                     binding.favorite.setImageResource(R.drawable.ic_favorite_border)
                 }
             }
@@ -111,29 +100,18 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun sendCmt() {
-        if(binding.cmtContent.text.toString() != "") {
-            val commentData = database.getReference("comments")
-            val key = commentData.push().key.toString()
-            database.reference.child("foods")
-                .child(foodId)
-                .get()
-                .addOnSuccessListener { food ->
-                    database.reference.child("users")
-                        .child(uId)
-                        .get()
-                        .addOnSuccessListener {
-                            comment = Comment(
-                                id = key,
-                                time = System.currentTimeMillis().toString(),
-                                content = binding.cmtContent.text.toString(),
-                                user = it.getValue(User::class.java)!!,
-                                food = food.getValue(Food::class.java)!!
-                            )
-                            commentData.child(key).setValue(comment)
-                                .addOnSuccessListener {
-                                    binding.cmtContent.text.clear()
-                                }
-                        }
+        val content = binding.cmtContent.text.toString()
+        val key = database.getReference("comments/$uId").push().key.toString()
+        if(content != "") {
+            database.getReference("comments").child(key).get()
+                .addOnSuccessListener {
+                    if(!it.exists()) {
+                        comment = Comment(System.currentTimeMillis().toString(), content, uId, foodId)
+                        database.getReference("comments").child(key).setValue(comment)
+                            .addOnSuccessListener {
+                                binding.cmtContent.text.clear()
+                            }
+                    }
                 }
         }
     }
@@ -155,11 +133,12 @@ class DetailActivity : AppCompatActivity() {
             .child(foodId)
             .get()
             .addOnSuccessListener {
+                val uId = it.child("user/uid").value.toString()
                 Glide.with(this)
                     .load(it.child("imageUrl").value.toString())
                     .into(binding.foodImage)
 
-                binding.foodName.text = it.child("name").value.toString()
+                binding.foodName.text = it.child("name").value.toString().capitalize()
 
                 binding.desContent.text = it.child("des").value.toString()
 
@@ -170,33 +149,56 @@ class DetailActivity : AppCompatActivity() {
 
                 binding.userDisplayname.text = it.child("user").child("displayName").value.toString()
 
+//              Load danh sach nguyen lieu
                 val listMaterial: ArrayList<Material> = ArrayList()
                 for(materialItem in it.child("materials").children) {
                     val material = materialItem.getValue(Material::class.java)
                     listMaterial.add(material!!)
                 }
-                val materialAdapter = MaterialAdapter(listMaterial)
-                binding.materialList.layoutManager = LinearLayoutManager(this)
-                binding.materialList.adapter = materialAdapter
+                loadMaterial(listMaterial)
 
+//              Load danh sach buoc lam
                 val listStep: ArrayList<String> = ArrayList()
                 for(stepItem in it.child("steps").children) {
                     listStep.add(stepItem!!.value.toString())
                 }
-                val stepAdapter = StepAdapter(listStep)
-                binding.stepList.layoutManager = LinearLayoutManager(this)
-                binding.stepList.adapter = stepAdapter
+                loadStep(listStep)
 
-                loadNewFood(it.child("user/uid").value.toString())
+//              Load danh sach thuc an moi cua nguoi dung
+                loadNewFood(uId)
 
+//              Load thoi gian dang thuc an
                 binding.foodTime.text =  getDateTime(it.child("timeUpdate").value.toString())
+
+                binding.profileButton.setOnClickListener {
+                    val intent = Intent(this@DetailActivity, ProfileActivity::class.java)
+                    intent.putExtra("uId", uId)
+                    startActivity(intent)
+                }
 
             }
     }
 
+    private fun loadMaterial(listMaterial: ArrayList<Material>) {
+        for (i in 0 until listMaterial.size) {
+            val view = LayoutInflater.from(this).inflate(R.layout.item_material, null)
+            view.findViewById<TextView>(R.id.material_name).text = listMaterial[i].name
+            view.findViewById<TextView>(R.id.material_quality).text = listMaterial[i].quality
+            binding.materialList.addView(view)
+        }
+    }
+
+    private fun loadStep(listStep: ArrayList<String>) {
+        for (i in 0 until listStep.size) {
+            val view = LayoutInflater.from(this).inflate(R.layout.item_step, null)
+            view.findViewById<TextView>(R.id.order).text = (i+1).toString()
+            view.findViewById<TextView>(R.id.content).text = listStep[i]
+            binding.stepList.addView(view)
+        }
+    }
+
     private fun loadCmt() {
-        val foodId = intent.getStringExtra("food_id").toString()
-        val query = database.getReference("comments").orderByChild("food/id").equalTo(foodId)
+        val query = database.getReference("comments").orderByChild("foodId").equalTo(foodId)
         query.addValueEventListener( object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 listComment.clear()
@@ -245,6 +247,41 @@ class DetailActivity : AppCompatActivity() {
         })
     }
 
+    private fun showMenuReport(view: View, context: Context, foodId: String) {
+        val popupMenu = PopupMenu(context.applicationContext, view)
+        popupMenu.inflate(R.menu.menu_popup)
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.report -> {
+                    AlertDialog.Builder(context)
+                        .setTitle("Báo cáo món ăn")
+                        .setMessage("Bạn đã xác nhận món ăn này không đúng nội dung về công thức nầu ăn chưa?")
+                        .setPositiveButton("Báo cáo") { dialog, _ ->
+                            database.getReference("reports").child(foodId).get()
+                                .addOnSuccessListener {
+                                    if(it.exists()){
+                                        val quality = it.value as Long
+                                        database.getReference("reports/$foodId").setValue(quality + 1)
+                                    } else {
+                                        database.getReference("reports/$foodId").setValue(1)
+                                    }
+                                    Toast.makeText(context, "Đã báo cáo món ăn", Toast.LENGTH_SHORT).show()
+                                }
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("Đóng") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
+                    true
+                }
+                else -> true
+            }
+        }
+        popupMenu.show()
+    }
+
     private fun getDateTime(s: String): String? {
         return try {
             val sdf = SimpleDateFormat("dd/MM/yyyy")
@@ -253,29 +290,6 @@ class DetailActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.toString()
         }
-    }
-
-    private fun addHistory() {
-        val key = "$uId$foodId"
-        database.getReference("histories").child(key).get()
-            .addOnSuccessListener {
-                if(!it.exists()) {
-                    database.getReference("users")
-                        .child(uId)
-                        .get()
-                        .addOnSuccessListener { user ->
-                            database.getReference("foods")
-                                .child(foodId)
-                                .get()
-                                .addOnSuccessListener {
-                                    val food = it.getValue(Food::class.java)!!
-                                    val user = user.getValue(User::class.java)!!
-                                    history = History(id = key, user = user, food = food)
-                                    database.getReference("histories").child(key).setValue(history)
-                                }
-                        }
-                }
-            }
     }
 
 }

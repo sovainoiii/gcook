@@ -11,11 +11,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.gcook.Model.Comment
 import com.example.gcook.R
+import com.google.firebase.database.FirebaseDatabase
 import java.sql.Date
 import java.text.SimpleDateFormat
 
 class CommentAdapter(private val listCmt: ArrayList<Comment>)
     :RecyclerView.Adapter<CommentAdapter.CommentViewHolder>(){
+
+    private val database = FirebaseDatabase.getInstance()
 
     class CommentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val avatar = itemView.findViewById<ImageView>(R.id.cmt_avatar)
@@ -31,13 +34,16 @@ class CommentAdapter(private val listCmt: ArrayList<Comment>)
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val cmt = listCmt[position]
-        holder.displayName.text = cmt.user.displayName
+        database.getReference("users").child(cmt.uId).get()
+            .addOnSuccessListener {
+                holder.displayName.text = it.child("displayName").value.toString()
+                Glide.with(holder.itemView.context)
+                    .load(it.child("avatarUrl").value.toString())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(holder.avatar)
+            }
         holder.time.text = getDateTime(cmt.time)
         holder.content.text = cmt.content
-        Glide.with(holder.itemView.context)
-            .load(cmt.user.avatarUrl)
-            .apply(RequestOptions.circleCropTransform())
-            .into(holder.avatar)
     }
 
     override fun getItemCount(): Int {

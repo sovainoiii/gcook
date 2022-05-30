@@ -5,9 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:padding="4dp"
     android:background="@drawable/bg_item"
     android:elevation="5dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
     android:orientation="horizontal">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -15,7 +17,6 @@
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
-        android:layout_marginEnd="10dp"
         android:adjustViewBounds="true"
         app:shapeAppearanceOverlay="@style/roundImage"
         tools:srcCompat="@tools:sample/avatars" />
@@ -23,6 +24,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -38,9 +40,10 @@
         <TextView
             android:id="@+id/food_des"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:text="TextView"
+            android:maxLines="4"
             android:ellipsize="end"
             android:layout_marginBottom="5dp"/>
 

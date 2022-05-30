@@ -1,4 +1,4 @@
-package com.example.gcook
+package com.example.gcook.UI.Home
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,12 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.gcook.*
+import com.example.gcook.UI.Auth.SignInActivity
+import com.example.gcook.UI.Home.Fragment.AddFragment
+import com.example.gcook.UI.Home.Fragment.HomeFragment
+import com.example.gcook.UI.Home.Fragment.SearchFragment
+import com.example.gcook.UI.Home.Fragment.UserFragment
 import com.example.gcook.databinding.ActivityHomeBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
