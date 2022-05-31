@@ -88,8 +88,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun loadFavorite() {
-        val key = "$uId$foodId"
-        database.getReference("favorites").child(key).get()
+        database.getReference("favorites/$uId").child(foodId).get()
             .addOnSuccessListener {
                 if(!it.exists()) {
                     binding.favorite.setImageResource(R.drawable.ic_favorite_border)

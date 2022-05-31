@@ -15,13 +15,12 @@
             android:id="@+id/image_food"
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:contentDescription="@string/add_image_food"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:foreground="@drawable/bg_darken"
-            app:srcCompat="@drawable/splash"
-            android:contentDescription="@string/add_image_food" />
+            android:src="@drawable/add_image" />
 
         <ImageView
             android:id="@+id/back"

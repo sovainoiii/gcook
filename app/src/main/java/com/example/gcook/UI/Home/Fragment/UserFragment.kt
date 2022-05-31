@@ -37,10 +37,10 @@ class UserFragment : Fragment() {
         TabLayoutMediator(binding.menuTab, binding.menu) {tab,position ->
             when(position) {
                 0 -> {
-                    tab.text = "Món của tôi"
+                    tab.text = "Món yêu thích"
                 }
                 1 -> {
-                    tab.text = "Món yêu thích"
+                    tab.text = "Món của tôi"
                 }
             }
         }.attach()

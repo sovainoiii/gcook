@@ -15,10 +15,10 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> {
-                MyFoodFragment()
+                FavotiteFragment()
             }
             1 -> {
-                FavotiteFragment()
+                MyFoodFragment()
             }
             else -> {
                 MyFoodFragment()

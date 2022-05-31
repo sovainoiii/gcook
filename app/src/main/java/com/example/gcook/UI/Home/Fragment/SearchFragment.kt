@@ -1,5 +1,6 @@
 package com.example.gcook.UI.Home.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import com.example.gcook.Adapter.SearchHistoryAdapter
 import com.example.gcook.Adapter.SearchNameFoodAdapter
 import com.example.gcook.Adapter.SearchPopularAdapter
 import com.example.gcook.Model.Food
+import com.example.gcook.UI.Detail.DetailActivity
 import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.databinding.FragmentSearchBinding
 import com.google.firebase.database.DataSnapshot
@@ -43,11 +45,21 @@ class SearchFragment : Fragment() {
 
         listHistories = ArrayList()
         historiesAdapter = SearchHistoryAdapter(listHistories)
+        historiesAdapter.onItemClick = {
+            val intent = Intent(activity, DetailActivity::class.java)
+            intent.putExtra("food_id",it)
+            startActivity(intent)
+        }
         binding.listSearch.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, isInLayout)
         binding.listSearch.adapter = historiesAdapter
 
         listPopular = ArrayList()
         popularAdapter = SearchPopularAdapter(listPopular)
+        popularAdapter.onItemClick = {
+            val intent = Intent(activity, DetailActivity::class.java)
+            intent.putExtra("food_id",it)
+            startActivity(intent)
+        }
         binding.listPopular.layoutManager = GridLayoutManager(activity, 2)
         binding.listPopular.adapter = popularAdapter
 

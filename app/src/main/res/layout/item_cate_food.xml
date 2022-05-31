@@ -64,7 +64,6 @@
             android:id="@+id/img_food"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:foreground="@drawable/bg_darken"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             app:shapeAppearanceOverlay="@style/roundImageLeftRightTop"
