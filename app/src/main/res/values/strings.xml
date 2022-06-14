@@ -13,7 +13,7 @@
     <string name="hint_material_quality">Số lượng</string>
     <string name="hint_content_cmt">Nội dung</string>
     <string name="title_food_new">Món ăn mới</string>
-    <string name="title_food_search">Món ăn được tìm kiếm nhiều</string>
+    <string name="title_food_favorite">Món ăn yêu thích nhất</string>
     <string name="title_cmt_new">Bình luận mới</string>
     <string name="name_app">G-Cook</string>
     <string name="welcome">Chào mừng bạn đến với</string>

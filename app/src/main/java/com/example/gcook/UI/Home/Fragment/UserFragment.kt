@@ -9,8 +9,11 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.gcook.Adapter.ViewPagerAdapter
+import com.example.gcook.Model.User
+import com.example.gcook.UI.Auth.RegisterActivity
 import com.example.gcook.UI.Profile.ProfileActivity
 import com.example.gcook.UI.Home.HomeActivity
+import com.example.gcook.UI.Admin.ManageActivity
 import com.example.gcook.databinding.FragmentUserBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.database.FirebaseDatabase
@@ -47,6 +50,20 @@ class UserFragment : Fragment() {
 
         loadUser()
 
+        binding.editUser.setOnClickListener {
+            database.getReference("users").child(uId).get()
+                .addOnSuccessListener {
+                    val user = it.getValue(User::class.java)
+                    val intent = Intent(activity, RegisterActivity::class.java)
+                    intent.putExtra("id", user!!.uId)
+                    intent.putExtra("displayName", user.displayName)
+                    intent.putExtra("email", user.email)
+                    intent.putExtra("avatarUrl", user.avatarUrl)
+                    startActivity(intent)
+                }
+
+        }
+
         binding.logout.setOnClickListener {
             homeActivity.logout()
         }
@@ -77,6 +94,9 @@ class UserFragment : Fragment() {
 
                 if(it.child("rule").value.toString() == "admin") {
                     binding.admin.visibility = View.VISIBLE
+                    binding.admin.setOnClickListener {
+                        startActivity(Intent(activity, ManageActivity::class.java))
+                    }
                 }
 
             }

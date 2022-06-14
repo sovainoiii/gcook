@@ -99,11 +99,7 @@ class SearchFoodFragment : Fragment() {
         database.getReference("histories/$uId").child(foodId).get()
             .addOnSuccessListener {
                 if (!it.exists()) {
-                    database.getReference("foods").child(foodId).get()
-                        .addOnSuccessListener {
-                            val food = it.getValue(Food::class.java)
-                            database.getReference("histories/$uId").child(foodId).setValue(food)
-                        }
+                    database.getReference("histories/$uId").child(foodId).setValue(foodId)
                 }
             }
     }
@@ -113,7 +109,7 @@ class SearchFoodFragment : Fragment() {
         binding.searchResultBox.visibility = View.VISIBLE
         val query = database.getReference("foods")
             .orderByChild("name")
-        if(name != "") {
+        if(name.trim() != "") {
             query.addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     listFood.clear()
@@ -142,7 +138,7 @@ class SearchFoodFragment : Fragment() {
         binding.listName.visibility = View.VISIBLE
         val query = database.getReference("foods")
             .orderByChild("name")
-        if(name != "") {
+        if(name.trim() != "") {
             query.addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     listNameFood.clear()

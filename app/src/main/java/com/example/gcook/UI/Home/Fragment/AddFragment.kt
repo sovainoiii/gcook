@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import com.example.gcook.UI.AddFood.AddFoodActivity
+import com.example.gcook.UI.Food.AddFoodActivity
 import com.example.gcook.UI.Home.HomeActivity
 import com.example.gcook.databinding.FragmentAddBinding
 import com.google.firebase.database.FirebaseDatabase

@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.gcook.Model.Food
 import com.example.gcook.R
+import com.google.firebase.database.FirebaseDatabase
 
-class SearchHistoryAdapter(private val listHistories: ArrayList<Food>)
+class SearchHistoryAdapter(private val listHistories: ArrayList<String>)
     : RecyclerView.Adapter<SearchHistoryAdapter.SearchHistoryViewHolder>(){
 
     var onItemClick: ((String)->Unit)? = null
+    val database = FirebaseDatabase.getInstance()
 
     class SearchHistoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imageFood = itemView.findViewById<ImageView>(R.id.img_food)
@@ -26,14 +28,18 @@ class SearchHistoryAdapter(private val listHistories: ArrayList<Food>)
     }
 
     override fun onBindViewHolder(holder: SearchHistoryViewHolder, position: Int) {
-        val food = listHistories[position]
-        holder.nameFood.text = food.name.capitalize()
-        Glide.with(holder.itemView.context)
-            .load(food.imageUrl)
-            .into(holder.imageFood)
-        holder.itemView.setOnClickListener {
-            onItemClick?.invoke(food.id)
-        }
+        val foodId = listHistories[position]
+        database.getReference("foods/$foodId").get()
+            .addOnSuccessListener {
+                val food = it.getValue(Food::class.java)
+                holder.nameFood.text = food!!.name.capitalize()
+                Glide.with(holder.itemView.context)
+                    .load(food.imageUrl)
+                    .into(holder.imageFood)
+                holder.itemView.setOnClickListener {
+                    onItemClick?.invoke(food.id)
+                }
+            }
     }
 
     override fun getItemCount(): Int {

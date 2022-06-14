@@ -23,6 +23,10 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.backBtn.setOnClickListener {
+            finish()
+        }
+
         db = FirebaseDatabase.getInstance().getReference("users")
 
         Glide.with(this)

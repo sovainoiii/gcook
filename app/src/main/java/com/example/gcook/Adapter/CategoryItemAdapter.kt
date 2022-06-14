@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.gcook.Model.Food
+import com.example.gcook.Model.Report
 import com.example.gcook.R
 import com.google.firebase.database.FirebaseDatabase
 
@@ -73,14 +74,15 @@ class CategoryItemAdapter(private val listFood: ArrayList<Food>)
                             database.getReference("reports").child(foodId).get()
                                 .addOnSuccessListener {
                                     if(it.exists()){
-                                        val quality = it.value as Long
-                                        database.getReference("reports/$foodId").setValue(quality + 1)
+                                        val report = it.getValue(Report::class.java)
+                                        report!!.quality = report.quality + 1
+                                        database.getReference("reports/$foodId").setValue(report)
                                     } else {
-                                        database.getReference("reports/$foodId").setValue(1)
+                                        val report = Report(id = foodId, quality = 1)
+                                        database.getReference("reports/$foodId").setValue(report)
                                     }
                                     Toast.makeText(context, "Đã báo cáo món ăn", Toast.LENGTH_SHORT).show()
                                 }
-                            Toast.makeText(context, "Đã báo cáo món ăn", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
                         }
                         .setNegativeButton("Đóng") { dialog, _ ->

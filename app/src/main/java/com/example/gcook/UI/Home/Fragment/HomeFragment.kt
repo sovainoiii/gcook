@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gcook.Adapter.CategoryCommentAdapter
 import com.example.gcook.Adapter.CategoryItemAdapter
+import com.example.gcook.Adapter.FavoriteAdapter
 import com.example.gcook.UI.Detail.DetailActivity
 import com.example.gcook.Model.Comment
 import com.example.gcook.Model.Food
@@ -25,8 +26,10 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private var listCate: ArrayList<Food> = ArrayList()
     private var listCmt: ArrayList<Comment> = ArrayList()
+    private var listFavorite: ArrayList<String> = ArrayList()
     private lateinit var cateAdapter: CategoryItemAdapter
     private lateinit var cmtAdapter: CategoryCommentAdapter
+    private lateinit var favoriteAdapter: FavoriteAdapter
     private val database = FirebaseDatabase.getInstance()
 
     override fun onCreateView(
@@ -54,6 +57,14 @@ class HomeFragment : Fragment() {
         binding.listCmt.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         binding.listCmt.adapter = cmtAdapter
         cmtAdapter.onItemClick = {
+            val intent = Intent(activity, DetailActivity::class.java)
+            intent.putExtra("food_id",it)
+            startActivity(intent)
+        }
+        favoriteAdapter = FavoriteAdapter(listFavorite)
+        binding.listFavorite.layoutManager = GridLayoutManager(activity, 2)
+        binding.listFavorite.adapter = favoriteAdapter
+        favoriteAdapter.onItemClick = {
             val intent = Intent(activity, DetailActivity::class.java)
             intent.putExtra("food_id",it)
             startActivity(intent)
@@ -92,6 +103,21 @@ class HomeFragment : Fragment() {
                         listCmt.add(0,cmt!!)
                     }
                     cmtAdapter.notifyDataSetChanged()
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        val queryFavorite = database.getReference("favoriteCount").orderByValue().limitToLast(10)
+        queryFavorite.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()) {
+                    for (foodSnapshot in snapshot.children) {
+                        listFavorite.add(0, foodSnapshot.key.toString())
+                    }
+                    favoriteAdapter.notifyDataSetChanged()
                 }
             }
             override fun onCancelled(error: DatabaseError) {

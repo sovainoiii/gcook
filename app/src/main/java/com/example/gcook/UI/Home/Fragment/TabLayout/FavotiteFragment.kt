@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.gcook.Adapter.FoodProfileAdapter
+import com.example.gcook.Adapter.SearchPopularAdapter
 import com.example.gcook.Model.Food
 import com.example.gcook.R
 import com.example.gcook.UI.Detail.DetailActivity
@@ -23,8 +24,8 @@ class FavotiteFragment : Fragment() {
     private lateinit var binding: FragmentFavotiteBinding
     private val database = FirebaseDatabase.getInstance()
     private lateinit var uId: String
-    private lateinit var listFood: ArrayList<Food>
-    private lateinit var foodAdapter: FoodProfileAdapter
+    private lateinit var listFood: ArrayList<String>
+    private lateinit var foodAdapter: SearchPopularAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +37,7 @@ class FavotiteFragment : Fragment() {
         uId = homeActivity.getId()
 
         listFood = ArrayList()
-        foodAdapter = FoodProfileAdapter(listFood)
+        foodAdapter = SearchPopularAdapter(listFood)
         binding.listFood.layoutManager = GridLayoutManager(activity, 2)
         binding.listFood.adapter = foodAdapter
         foodAdapter.onItemClick = {
@@ -51,14 +52,14 @@ class FavotiteFragment : Fragment() {
     }
 
     private fun loadFood(uId: String) {
-        val query = database.getReference("favorites").child(uId).orderByChild("name")
+        val query = database.getReference("favorites").child(uId).orderByKey()
         query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
                     listFood.clear()
                     for (foodSnapshot in snapshot.children){
-                        val food = foodSnapshot.getValue(Food::class.java)
-                        listFood.add(food!!)
+                        val foodId = foodSnapshot.value.toString()
+                        listFood.add(foodId!!)
                     }
                     foodAdapter.notifyDataSetChanged()
                 } else {

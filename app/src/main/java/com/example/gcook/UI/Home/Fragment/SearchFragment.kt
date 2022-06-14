@@ -24,7 +24,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     private val database = FirebaseDatabase.getInstance()
-    private lateinit var listHistories: ArrayList<Food>
+    private lateinit var listHistories: ArrayList<String>
     private lateinit var historiesAdapter: SearchHistoryAdapter
     private lateinit var listPopular: ArrayList<String>
     private lateinit var popularAdapter: SearchPopularAdapter
@@ -76,7 +76,7 @@ class SearchFragment : Fragment() {
                 if(snapshot.exists()) {
                     listHistories.clear()
                     for(historySnapshot in snapshot.children) {
-                        val history = historySnapshot.getValue(Food::class.java)
+                        val history = historySnapshot.value.toString()
                         listHistories.add(history!!)
                     }
                     historiesAdapter.notifyDataSetChanged()
